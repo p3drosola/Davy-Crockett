@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Davy Demo</title>
+	<title>Admin # Davy Crockett</title>
 
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -9,30 +9,113 @@
 	<script src="http://localhost:8000/socket.io/socket.io.js"></script>
 	<script>
 
-	var socket = io.connect('http://localhost:8000/view');
-	// load innicial database
+	(function(){
+	
+	// connect
+	var socket = io.connect('http://localhost:8000/admin');
+	var admin = {};
+
+	// load inicial clients database
 	socket.on('db', function (data) {
 		console.log('current db');
 		console.log(data);
+
+		$.each(data, function(index,item){
+			admin.newClient(index,item);
+		});
 	});
 
-	// new record
-	socket.on('db new', function (data) {
+	// new clients record
+	socket.on('db new', function (client) {
 		console.log('new client!');
-		console.log(data);
+		console.log(client);
+		admin.newClient(client.id,client.data);
 	});
 
-	// remove record
-	socket.on('db remove', function (data) {
-		console.log('someone left (' + data +')');
+	// remove clients record
+	socket.on('db remove', function (client_id) {
+		console.log('someone left (' + client_id +')');
+		admin.removeClient(client_id);
 	});
+
+
+	// Admin Interface
+
+
+	// when the track button is clicked
+	$('#list .trackbtn').live('click', function(){
+
+		admin.showDetailsPane();
+		var id = $(this).data('id');
+		console.log('joining '+id);
+		
+		socket.emit('tail', id );
+		socket.emit('join room', 'c_'+id );
+
+	});
+
+	admin.newClient = function(id, data){
+
+		var n = '<details id="c_'+id+'">';
+		n += '<summary><span class="title">'+id+'</span>';
+		n += '<span class="browser '+data.details.browser+'"></span>';
+		n += '<span class="os '+data.details.os+'"></span>';
+		n += '</summary>';
+		n += '<button class="trackbtn btn small primary" data-id="'+id+'">Track</button>';
+		n += '<pre>'+dump(data)+'</pre>';
+		n += '</details>';
+		$('#list-inner').append(n);
+	};
 	
-	function showDetailsPane(){
+	admin.removeClient = function(id){
+		$('#list #c_'+id).fadeTo('slow', .2);
+	};
+
+	admin.showDetailsPane = function(){
 		$('#main').animate({
 			width:800
 		}, 100);
+	};
+	admin.hideDetailsPane = function(){
+		$('#main').animate({
+			width:400
+		}, 100);
+	};
+
+
+
+
+
+	// Helpers
+
+
+	function dump(arr,level) {
+		var dumped_text = "";
+		if(!level) level = 0;
+		
+		//The padding given at the beginning of the line.
+		var level_padding = "";
+		for(var j=0;j<level+1;j++) level_padding += "    ";
+		
+		if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+			for(var item in arr) {
+				var value = arr[item];
+				
+				if(typeof(value) == 'object') { //If it is an array,
+					dumped_text += level_padding + "'" + item + "' ...\n";
+					dumped_text += dump(value,level+1);
+				} else {
+					dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+				}
+			}
+		} else { //Stings/Chars/Numbers etc.
+			dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+		}
+		return dumped_text;
 	}
-		  
+
+	})();
+	 
 	</script>
 </head>
 <body>
@@ -41,11 +124,10 @@
 		<div id="list">
 			<div id="list-inner">
 				<h1>Davy Crockett</h1>
-				<p>live user tracker</p>
 			</div>
 		</div>
 		<div id="details">
-			<p>details</p>
+			<div id="details-inner">details</div>
 		</div>
 	</div>
 	</div>

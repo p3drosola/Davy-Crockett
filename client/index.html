@@ -1,9 +1,12 @@
 <html>
 <head>
-	<title>Davy Demo</title>
+	<title>Client # Davy Crockett</title>
 	<script src="http://localhost:8000/socket.io/socket.io.js"></script>
 	<script>
 
+	(function(){
+		
+	
 	var socket = io.connect('http://localhost:8000/tracker');
 
 	var BrowserDetect = {
@@ -129,8 +132,18 @@
 		browserVersion : BrowserDetect.version
 	};
 
-	socket.emit('open page', { url: window.location.href, details: details , groupBy: 'ip'});
+	socket.emit('open page', { 
+		url: window.location.href,
+		details: details ,
+		groupBy: 'ip'
+		}
+	);
 
+	socket.on('tailing', function(){
+		alert('i\'m being tailed!');
+	})
+
+	})();
 		  
 	</script>
 </head>

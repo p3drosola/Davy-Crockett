@@ -10,18 +10,79 @@ body {
 	overflow-x:hidden;
 }
 #main-inner {
-	width:805px;
+	width:800px;
+	position:relative;
 }
 #list {
 	width:400px;
 	display:inline-block;
+	position:relative;
 }
 #list-inner {
 	padding:14px;
 }
 
 #details{
-	width:400px;
-	display:inline-block;
+	width:399px;
+	position:absolute;
+	top:0px;
+	right:0px;
+	background:hsl(210, 100%, 98%);
+	height:100%;
+	border-left:1px solid hsl(210, 100%, 94%);
+}
 
+h1 {
+	font-family:'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',Helvetica, sans-serif;
+	font-weight:normal;
+}
+
+#details-inner {
+	padding:20px;
+}
+#list pre {
+	overflow:scroll;
+}
+
+#list .trackbtn {
+	margin:10px;
+}
+#list details summary {
+	height:32px;
+}
+#list details summary .title{
+	padding: 5px 0;
+}
+
+#list details summary .browser,
+#list details summary .os {
+	width:32px;
+	height:32px;
+	background-repeat:no-repeat;
+	background-position:top right;
+	display:inline-block;
+	float:right;
+	margin-left:4px;
+}
+
+/* Operating Systems */
+#list summary .os.Mac {
+	background-image:url(img/OS/Mac.png);
+}
+#list summary .os.iPhone {
+	background-image:url(img/OS/iPhone.png);
+}
+#list summary .os.Linux {
+	background-image:url(img/OS/Linux.png);
+}
+#list summary .os.Windows {
+	background-image:url(img/OS/Windows.png);
+}
+
+/* Browsers */
+#list summary .browser.Chrome {
+	background-image:url(img/Browsers/Chrome.png);
+}
+#list summary .browser.Safari {
+	background-image:url(img/Browsers/Safari.png);
 }

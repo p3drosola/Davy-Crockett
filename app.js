@@ -23,7 +23,7 @@ tracker.on('connection', function (socket) {
 		db[socket.id] = data;
 
 		// update view
-		view.emit('db new', data);
+		admin.emit('db new', { id:socket.id, data:data});
 
 	});
 	socket.on('disconnect', function () {
@@ -34,12 +34,24 @@ tracker.on('connection', function (socket) {
 		delete db[socket.id];
 
 		// update view
-		view.emit('db remove', socket.id);
+		admin.emit('db remove', socket.id);
 	});
 });
 
-var view = io.of('/view');
-view.on('connection', function (socket) {
+var admin = io.of('/admin');
+admin.on('connection', function (socket) {
+	
+	// push current client DB
 	socket.emit('db', db);
+
+	socket.on('tail', function(client_id) {
+		console.log('now tracking client:' + client_id);
+		io.sockets.socket(client_id).emit('tracking',{});
+	
+	});
+
 });
+
+
+
 
