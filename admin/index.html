@@ -1,0 +1,53 @@
+<html>
+<head>
+	<title>Davy Demo</title>
+
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<script src="jquery-1.7.min.js" type="text/javascript"></script>
+	<script src="http://localhost:8000/socket.io/socket.io.js"></script>
+	<script>
+
+	var socket = io.connect('http://localhost:8000/view');
+	// load innicial database
+	socket.on('db', function (data) {
+		console.log('current db');
+		console.log(data);
+	});
+
+	// new record
+	socket.on('db new', function (data) {
+		console.log('new client!');
+		console.log(data);
+	});
+
+	// remove record
+	socket.on('db remove', function (data) {
+		console.log('someone left (' + data +')');
+	});
+	
+	function showDetailsPane(){
+		$('#main').animate({
+			width:800
+		}, 100);
+	}
+		  
+	</script>
+</head>
+<body>
+	<div id="main">
+	<div id="main-inner">
+		<div id="list">
+			<div id="list-inner">
+				<h1>Davy Crockett</h1>
+				<p>live user tracker</p>
+			</div>
+		</div>
+		<div id="details">
+			<p>details</p>
+		</div>
+	</div>
+	</div>
+</body>
+</html>

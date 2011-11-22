@@ -1,0 +1,27 @@
+
+body {
+	background:#eeeeee;
+}
+#main {
+	width:400px;
+	margin:auto;
+	background:white;
+	box-shadow:0 0 5px #cdcdcd;
+	overflow-x:hidden;
+}
+#main-inner {
+	width:805px;
+}
+#list {
+	width:400px;
+	display:inline-block;
+}
+#list-inner {
+	padding:14px;
+}
+
+#details{
+	width:400px;
+	display:inline-block;
+
+}
