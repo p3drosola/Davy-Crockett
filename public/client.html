@@ -141,6 +141,7 @@
 
 	socket.on('tailing', function(){
 		alert('i\'m being tailed!');
+		socket.emit('join room', 'c_'+id );
 	})
 
 	})();

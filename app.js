@@ -3,16 +3,18 @@ var io = require('socket.io').listen(app);
 
 // inicialize the database
 var db = {};
+var clients = {};
 
-app.listen(8000);
-
+//app.use(express.staticProvider(__dirname + '/public'));
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/admin/index.html');
 });
-
+app.listen(8000);
 
 var tracker = io.of('/tracker');
 tracker.on('connection', function (socket) {
+
+	clients[socket.id] = socket; 
 
 	socket.on('open page', function (data) {
 		console.log("Client "+socket.id+ " active on " + data.url);
@@ -32,6 +34,7 @@ tracker.on('connection', function (socket) {
 
 		// remove from DB
 		delete db[socket.id];
+		delete clients[socket.id];
 
 		// update view
 		admin.emit('db remove', socket.id);
@@ -46,8 +49,8 @@ admin.on('connection', function (socket) {
 
 	socket.on('tail', function(client_id) {
 		console.log('now tracking client:' + client_id);
-		io.sockets.socket(client_id).emit('tracking',{});
-	
+
+		clients[client_id].emit('tailing');
 	});
 
 });

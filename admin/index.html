@@ -46,7 +46,7 @@
 	$('#list .trackbtn').live('click', function(){
 
 		admin.showDetailsPane();
-		var id = $(this).data('id');
+		var id = $(this).attr('data-id');
 		console.log('joining '+id);
 		
 		socket.emit('tail', id );
