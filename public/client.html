@@ -1,155 +1,59 @@
 <html>
 <head>
 	<title>Client # Davy Crockett</title>
-	<script src="http://localhost:8000/socket.io/socket.io.js"></script>
+	<script src="socket.io/socket.io.js"></script>
+	<script src="browserDetect.js"></script>
 	<script>
 
-	(function(){
-		
-	
-	var socket = io.connect('http://localhost:8000/tracker');
+	var indian = {
 
-	var BrowserDetect = {
-		init: function () {
-			this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
-			this.version = this.searchVersion(navigator.userAgent)
-				|| this.searchVersion(navigator.appVersion)
-				|| "an unknown version";
-			this.OS = this.searchString(this.dataOS) || "an unknown OS";
+		'conf' : function(configuraiton) {
+			// TODO: merge config with defaults
+			this.conf = configuration;	
 		},
-		searchString: function (data) {
-			for (var i=0;i<data.length;i++)	{
-				var dataString = data[i].string;
-				var dataProp = data[i].prop;
-				this.versionSearchString = data[i].versionSearch || data[i].identity;
-				if (dataString) {
-					if (dataString.indexOf(data[i].subString) != -1)
-						return data[i].identity;
+
+		'init' : function(){
+
+			this.id;
+			this.tailing = false;
+			this.socket = io.connect('http://localhost:8000/tracker');
+
+			// get client details
+			BrowserDetect.init();
+			var details = {
+				os : BrowserDetect.OS,
+				browser : BrowserDetect.browser,
+				browserVersion : BrowserDetect.version
+			};
+
+			this.socket.on('connect', function(t){
+				console.log('indian spawned:'+this.socket.sessionid);
+				this.id = this.socket.sessionid;
+			});
+			this.socket.emit('open page', { 
+				url: window.location.href,
+				details: details ,
+				groupBy: 'ip'
 				}
-				else if (dataProp)
-					return data[i].identity;
-			}
-		},
-		searchVersion: function (dataString) {
-			var index = dataString.indexOf(this.versionSearchString);
-			if (index == -1) return;
-			return parseFloat(dataString.substring(index+this.versionSearchString.length+1));
-		},
-		dataBrowser: [
-			{
-				string: navigator.userAgent,
-				subString: "Chrome",
-				identity: "Chrome"
-			},
-			{ 	string: navigator.userAgent,
-				subString: "OmniWeb",
-				versionSearch: "OmniWeb/",
-				identity: "OmniWeb"
-			},
-			{
-				string: navigator.vendor,
-				subString: "Apple",
-				identity: "Safari",
-				versionSearch: "Version"
-			},
-			{
-				prop: window.opera,
-				identity: "Opera",
-				versionSearch: "Version"
-			},
-			{
-				string: navigator.vendor,
-				subString: "iCab",
-				identity: "iCab"
-			},
-			{
-				string: navigator.vendor,
-				subString: "KDE",
-				identity: "Konqueror"
-			},
-			{
-				string: navigator.userAgent,
-				subString: "Firefox",
-				identity: "Firefox"
-			},
-			{
-				string: navigator.vendor,
-				subString: "Camino",
-				identity: "Camino"
-			},
-			{		// for newer Netscapes (6+)
-				string: navigator.userAgent,
-				subString: "Netscape",
-				identity: "Netscape"
-			},
-			{
-				string: navigator.userAgent,
-				subString: "MSIE",
-				identity: "Explorer",
-				versionSearch: "MSIE"
-			},
-			{
-				string: navigator.userAgent,
-				subString: "Gecko",
-				identity: "Mozilla",
-				versionSearch: "rv"
-			},
-			{ 		// for older Netscapes (4-)
-				string: navigator.userAgent,
-				subString: "Mozilla",
-				identity: "Netscape",
-				versionSearch: "Mozilla"
-			}
-		],
-		dataOS : [
-			{
-				string: navigator.platform,
-				subString: "Win",
-				identity: "Windows"
-			},
-			{
-				string: navigator.platform,
-				subString: "Mac",
-				identity: "Mac"
-			},
-			{
-				   string: navigator.userAgent,
-				   subString: "iPhone",
-				   identity: "iPhone/iPod"
-		    },
-			{
-				string: navigator.platform,
-				subString: "Linux",
-				identity: "Linux"
-			}
-		]
+			);
 
-	};
-	BrowserDetect.init();
-	var details = {
-		os : BrowserDetect.OS,
-		browser : BrowserDetect.browser,
-		browserVersion : BrowserDetect.version
-	};
-
-	socket.emit('open page', { 
-		url: window.location.href,
-		details: details ,
-		groupBy: 'ip'
+			this.socket.on('tailing', function(){
+				alert('looks like i\'m being tailed! '+this.id);
+				this.tailing = true;
+			});
+		},
+		'move' : function(){
+			this.socket.emit('mousemove', {'x':23, 'y':56});
 		}
-	);
-
-	socket.on('tailing', function(){
-		alert('i\'m being tailed!');
-		socket.emit('join room', 'c_'+id );
-	})
-
-	})();
+	};
+	//indian.conf({});
+	indian.init();
 		  
 	</script>
 </head>
 <body>
 	<h3>Hello world!</h3>
 	<p>This page is using Davy to track users in real-time! (as opposed to fake time, which is such a drag)</p>
+	<button id="interact" onclick="javscript:alert('an action!');" >interact</button>
 </body>
 </html>

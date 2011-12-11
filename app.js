@@ -1,15 +1,25 @@
-var app = require('express').createServer();
+var express = require('express');
+var app = express.createServer();
 var io = require('socket.io').listen(app);
 
 // inicialize the database
 var db = {};
 var clients = {};
+var tracking = {};
 
-//app.use(express.staticProvider(__dirname + '/public'));
-app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/admin/index.html');
+// setup the express server
+app.configure(function(){
+	app.use(express.static(__dirname + '/public'));
 });
+
+app.configure('development', function(){
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
+
+
 app.listen(8000);
+
+
 
 var tracker = io.of('/tracker');
 tracker.on('connection', function (socket) {
@@ -39,6 +49,19 @@ tracker.on('connection', function (socket) {
 		// update view
 		admin.emit('db remove', socket.id);
 	});
+
+	socket.on('mousemove', function(data){
+		console.log('mousemove event', data, socket.id);
+		console.log(tracking);
+		for(prop in tracking) {
+			console.log('prop ' + prop);
+			if (tracking[prop] == socket.id) {
+				//let's send the data to admin
+				clients[prop].emit('mousemove', data);
+				console.log('sending to admin');
+			}
+		}
+	});
 });
 
 var admin = io.of('/admin');
@@ -48,9 +71,15 @@ admin.on('connection', function (socket) {
 	socket.emit('db', db);
 
 	socket.on('tail', function(client_id) {
-		console.log('now tracking client:' + client_id);
 
+		console.log('admin is now tracking client:' + client_id);
+
+		// keep a record of the track opperation
+		tracking[socket.id] = client_id;
+
+		// let the indian know he is being followed
 		clients[client_id].emit('tailing');
+
 	});
 
 });
