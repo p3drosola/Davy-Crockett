@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express.createServer();
 var io = require('socket.io').listen(app);
+var exec = require('child_process').exec;
+var serverPort = 8000;
 
 // inicialize the database
 var db = {};
@@ -17,8 +19,9 @@ app.configure('development', function(){
 });
 
 
-app.listen(8000);
-
+app.listen(serverPort);
+exec('open "http://localhost:'+serverPort+'"/admin');
+exec('open "http://localhost:'+serverPort+'"/client.html');
 
 
 var tracker = io.of('/tracker');
@@ -28,8 +31,8 @@ tracker.on('connection', function (socket) {
 
 	socket.on('open page', function (data) {
 		console.log("Client "+socket.id+ " active on " + data.url);
-		console.log("Details:");
-		console.log(data.details);
+		//console.log("Details:");
+		//console.log(data.details);
 
 		// store in DB
 		db[socket.id] = data;
@@ -51,16 +54,15 @@ tracker.on('connection', function (socket) {
 	});
 
 	socket.on('mousemove', function(data){
-		console.log('mousemove event', data, socket.id);
-		console.log(tracking);
-		for(prop in tracking) {
-			console.log('prop ' + prop);
-			if (tracking[prop] == socket.id) {
-				//let's send the data to admin
-				clients[prop].emit('mousemove', data);
-				console.log('sending to admin');
-			}
+		console.log('recieved mousemove event', data, socket.id);
+	
+		if (tracking[socket.id] != undefined) {
+			io.sockets.sockets[tracking[socket.id]].emit("mousemove", { a: 'b' });
+		} else {
+			console.error("no tracker is listening to indian #"+socket.id);
 		}
+		
+		
 	});
 });
 
@@ -75,7 +77,7 @@ admin.on('connection', function (socket) {
 		console.log('admin is now tracking client:' + client_id);
 
 		// keep a record of the track opperation
-		tracking[socket.id] = client_id;
+		tracking[client_id] = socket.id;
 
 		// let the indian know he is being followed
 		clients[client_id].emit('tailing');
