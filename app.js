@@ -6,7 +6,6 @@ var serverPort = 8000;
 
 // inicialize the database
 var db = {};
-var clients = {};
 var tracking = {};
 
 // setup the express server

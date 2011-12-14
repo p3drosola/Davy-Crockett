@@ -9,115 +9,121 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
 
-	(function(){
-	
-	// connect
-	var socket = io.connect('http://localhost:8000/admin');
-	var admin = {};
-
-	// load inicial clients database
-	socket.on('db', function (data) {
-		console.log('current db');
-		console.log(data);
-
-		$.each(data, function(index,item){
-			admin.newClient(index,item);
-		});
-	});
-
-	// new clients record
-	socket.on('db new', function (client) {
-		console.log('new client!');
-		console.log(client);
-		admin.newClient(client.id,client.data);
-	});
-
-	// remove clients record
-	socket.on('db remove', function (client_id) {
-		console.log('someone left (' + client_id +')');
-		admin.removeClient(client_id);
-	});
-
-	socket.on('mousemove', function(data){
-		alert('on mouse move!');
-	});
-
-
-	// Admin Interface
-
-
-	// when the track button is clicked
-	$('#list .trackbtn').live('click', function(){
-
-		admin.showDetailsPane();
-		var id = $(this).attr('data-id');
-		console.log('joining '+id);
+	var Davy = {
 		
-		socket.emit('tail', id );
+		db :   {},
 
-	});
+		init:function(){
 
-	admin.newClient = function(id, data){
+			// connect to davy server
+			var socket = io.connect('http://localhost:8000/admin');
+			
+			// load inicial indians database
+			socket.on('db', function (data) {
+				console.log(data);
+				Davy.db = data;
+				$.each(data, function(id, indian){
+					Davy.db[id] = indian;
+					Davy.face.newClient(id, indian);
+				});
+			});
 
-		var n = '<details id="c_'+id+'">';
-		n += '<summary><span class="title">'+id+'</span>';
-		n += '<span class="browser '+data.details.browser+'"></span>';
-		n += '<span class="os '+data.details.os+'"></span>';
-		n += '</summary>';
-		n += '<button class="trackbtn btn small primary" data-id="'+id+'">Track</button>';
-		n += '<pre>'+dump(data)+'</pre>';
-		n += '</details>';
-		$('#list-inner').append(n);
-	};
-	
-	admin.removeClient = function(id){
-		$('#list #c_'+id).fadeTo('slow', .2);
-	};
+			// an indian connected
+			socket.on('db new', function (indian) {
+				Davy.db[indian.id] = indian.data;
+				Davy.face.newClient(indian.id,indian.data);
+			});
 
-	admin.showDetailsPane = function(){
-		$('#main').animate({
-			width:800
-		}, 100);
-	};
-	admin.hideDetailsPane = function(){
-		$('#main').animate({
-			width:400
-		}, 100);
-	};
+			// an indian disconnected
+			socket.on('db remove', function (client_id) {
+				delete Davy.db.client_id;
+				Davy.face.removeClient(client_id);
+			});
 
 
+			// tracker: click event
+			socket.on('click', function(data){
+				console.log('that damn indian clicked again!');
+				alert('that damn indian clicked again!');
+			});
 
 
+			// when the track button is clicked
+			$('#list .trackbtn').live('click', function(){
 
-	// Helpers
+				console.log('tailing #'+id);
+				var id = $(this).attr('data-id');
+				var indian = Davy.db[id];
+				Davy.face.showDetailsPane();
+				socket.emit('tail', id );
+
+				window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth);
+			});
 
 
-	function dump(arr,level) {
-		var dumped_text = "";
-		if(!level) level = 0;
-		
-		//The padding given at the beginning of the line.
-		var level_padding = "";
-		for(var j=0;j<level+1;j++) level_padding += "    ";
-		
-		if(typeof(arr) == 'object') { //Array/Hashes/Objects 
-			for(var item in arr) {
-				var value = arr[item];
+		},
+
+
+		// Admin Interface
+		face: {
+			newClient : function(id, data) {
+
+				var n = '<details id="c_'+id+'">';
+				n += '<summary><span class="title">'+id+'</span>';
+				n += '<span class="browser '+data.details.browser+'"></span>';
+				n += '<span class="os '+data.details.os+'"></span>';
+				n += '</summary>';
+				n += '<button class="trackbtn btn small primary" data-id="'+id+'">Track</button>';
+				n += '<pre>'+Davy.face.dump(data)+'</pre>';
+				n += '</details>';
+				$('#list-inner').append(n);
+			},
+
+			removeClient : function(id){
+				$('#list #c_'+id).fadeTo('slow', .2);
+			},
+
+			showDetailsPane : function(){
+				$('#main').animate({
+					width:800
+				}, 100);
+			},
+
+			hideDetailsPane : function(){
+				$('#main').animate({
+					width:400
+				}, 100);
+			},
+
+			// helper to print object details
+			// TODO: remove
+			dump : function(arr,level) {
+				var dumped_text = "";
+				if(!level) level = 0;
 				
-				if(typeof(value) == 'object') { //If it is an array,
-					dumped_text += level_padding + "'" + item + "' ...\n";
-					dumped_text += dump(value,level+1);
-				} else {
-					dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+				//The padding given at the beginning of the line.
+				var level_padding = "";
+				for(var j=0;j<level+1;j++) level_padding += "    ";
+				
+				if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+					for(var item in arr) {
+						var value = arr[item];
+						
+						if(typeof(value) == 'object') { //If it is an array,
+							dumped_text += level_padding + "'" + item + "' ...\n";
+							dumped_text += Davy.face.dump(value,level+1);
+						} else {
+							dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+						}
+					}
+				} else { //Stings/Chars/Numbers etc.
+					dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
 				}
+				return dumped_text;
 			}
-		} else { //Stings/Chars/Numbers etc.
-			dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
-		}
-		return dumped_text;
-	}
-
-	})();
+		},
+	}; // end Davy
+	Davy.init();
 	 
 	</script>
 </head>
@@ -131,7 +137,7 @@
 		</div>
 		<div id="details">
 			<div id="details-inner">
-			<iframe id="preview" src="/client.html"/>
+			<!-- <iframe id="preview" src="/client.html"/> -->
 			</div>
 		</div>
 	</div>

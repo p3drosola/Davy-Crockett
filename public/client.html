@@ -4,7 +4,37 @@
 	<script src="socket.io/socket.io.js"></script>
 	<script src="browserDetect.js"></script>
 	<script>
+	window.onload = function()
+    {	
+    	// get client details
+		BrowserDetect.init();
 
+		var elem = (document.compatMode === "CSS1Compat") ? 
+			document.documentElement : document.body;
+
+		var height = elem.clientHeight;
+		var width = elem.clientWidth;
+
+		var details = {
+				os : BrowserDetect.OS,
+				browser : BrowserDetect.browser,
+				browserVersion : BrowserDetect.version,
+				viewportHeight: height,
+				viewportWidth: width
+		};
+
+		indian.init(details);
+
+
+		// register interaction event handlers
+		document.onclick = function(e) {
+			if (e.type == 'click') {
+				indian.sendClick(indian.getMousePosition());
+			}
+			
+		}
+	}
+			
 	var indian = {
 
 		'conf' : function(configuraiton) {
@@ -12,19 +42,11 @@
 			this.conf = configuration;	
 		},
 
-		'init' : function(){
+		'init' : function(details){
 
 			this.id;
 			this.tailing = false;
 			this.socket = io.connect('http://localhost:8000/tracker');
-
-			// get client details
-			BrowserDetect.init();
-			var details = {
-				os : BrowserDetect.OS,
-				browser : BrowserDetect.browser,
-				browserVersion : BrowserDetect.version
-			};
 
 			this.socket.on('connect', function(t){
 				console.log('indian spawned:'+this.socket.sessionid);
@@ -42,13 +64,30 @@
 				this.tailing = true;
 			});
 		},
-		'move' : function(){
-			this.socket.emit('mousemove', {'x':23, 'y':56});
+		'sendClick' : function(data){
+			this.socket.emit('click', data);
+		},
+
+		getMousePosition: function(){
+			var posx = 0;
+			var posy = 0;
+			if (!e) var e = window.event;
+			if (e.pageX || e.pageY) 	{
+				posx = e.pageX;
+				posy = e.pageY;
+			}
+			else if (e.clientX || e.clientY) 	{
+				posx = e.clientX + document.body.scrollLeft
+					+ document.documentElement.scrollLeft;
+				posy = e.clientY + document.body.scrollTop
+					+ document.documentElement.scrollTop;
+			}
+			return {x:posx, y:posy};
 		}
+
 	};
-	//indian.conf({});
-	indian.init();
-		  
+	
+		 
 	</script>
 </head>
 <body>
