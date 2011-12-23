@@ -87,7 +87,7 @@ module.exports = {
 
 				if (trackDB[socket.id] != undefined) {
 					// TODO: currently sending to all users in /admin
-					adminIO.emit("click", { a: 'b' });
+					adminIO.emit("click", data);
 				} else {
 					clog.error("no tracker is listening to indian #"+socket.id);
 					clog.debug("trackingDB", trackDB);

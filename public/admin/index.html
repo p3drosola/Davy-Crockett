@@ -42,9 +42,10 @@
 
 
 			// tracker: click event
-			socket.on('click', function(data){
+			socket.on('click', function(coords){
 				console.log('indian click event');
-				window.sim.alert('indian click event');
+				console.log(window.sim.document);
+				console.log( window.sim.document.elementFromPoint(coords[0], coords[1]) );
 			});
 
 			// tracker scroll event
