@@ -33,9 +33,19 @@
 			}
 			
 		}
+		window.onscroll = function(e){
+			clearTimeout(indian.scrollDampner);
+
+			var x = (document.all ? document.scrollLeft : window.pageXOffset);
+			var y = (document.all ? document.scrollTop : window.pageYOffset);
+
+			indian.scrollDampner = setTimeout(indian.sendScroll([x, y]), 50 );
+		}
 	}
 			
 	var indian = {
+
+		'scrollDampner' : null,
 
 		'conf' : function(configuraiton) {
 			// TODO: merge config with defaults
@@ -67,6 +77,9 @@
 		'sendClick' : function(data){
 			this.socket.emit('click', data);
 		},
+		'sendScroll' : function(coords){
+			this.socket.emit('scroll', coords);
+		},
 
 		getMousePosition: function(){
 			var posx = 0;
@@ -91,6 +104,8 @@
 	</script>
 </head>
 <body>
+	
+	<img src="http://kellyozley.files.wordpress.com/2011/04/raccoon1.jpg" />
 	<h3>Hello world!</h3>
 	<p>This page is using Davy to track users in real-time! (as opposed to fake time, which is such a drag)</p>
 	<button id="interact" onclick="javscript:alert('an action!');" >interact</button>

@@ -87,7 +87,20 @@ module.exports = {
 
 				if (trackDB[socket.id] != undefined) {
 					// TODO: currently sending to all users in /admin
-					adminIO.emit("click", { a: 'b' }); //io.sockets.sockets[trackDB[socket.id]].emit("click", { a: 'b' });
+					adminIO.emit("click", { a: 'b' });
+				} else {
+					clog.error("no tracker is listening to indian #"+socket.id);
+					clog.debug("trackingDB", trackDB);
+				}
+			});
+			// events:
+			socket.on('scroll', function(data){
+				clog.warn('EVT[scroll] #'+socket.id, data);
+				
+				var trackDB = module.exports.trackDB;
+
+				if (trackDB[socket.id] != undefined) {
+					adminIO.emit("scroll", data);
 				} else {
 					clog.error("no tracker is listening to indian #"+socket.id);
 					clog.debug("trackingDB", trackDB);

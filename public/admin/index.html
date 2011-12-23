@@ -43,8 +43,14 @@
 
 			// tracker: click event
 			socket.on('click', function(data){
-				console.log('that damn indian clicked again!');
-				alert('that damn indian clicked again!');
+				console.log('indian click event');
+				window.sim.alert('indian click event');
+			});
+
+			// tracker scroll event
+			socket.on('scroll', function(coords){
+				console.log('indian scroll event');
+				window.sim.scrollTo(coords[0],coords[1]);
 			});
 
 
@@ -57,7 +63,7 @@
 				Davy.face.showDetailsPane();
 				socket.emit('tail', id );
 
-				window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth);
+				window.sim = window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth+',location=no,menubar=no,status=no,titlebar=no,toolbar=no,resizable=no,directories=no');
 			});
 
 
