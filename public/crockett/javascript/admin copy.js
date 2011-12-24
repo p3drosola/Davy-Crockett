@@ -1,13 +1,3 @@
-<html>
-<head>
-	<title>Admin # Davy Crockett</title>
-
-	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="style.css">
-
-	<script src="jquery-1.7.min.js" type="text/javascript"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script>
 
 	var Davy = {
 		
@@ -44,14 +34,15 @@
 			// tracker: click event
 			socket.on('click', function(coords){
 				console.log('indian click event');
-				console.log(window.sim.document);
-				console.log( window.sim.document.elementFromPoint(coords[0], coords[1]) );
+				console.log(window.simulator.document);
+				console.log( window.simulator.document.elementFromPoint(coords[0], coords[1]) );
+				window.simulator.document.elementFromPoint(coords[0], coords[1]).click();
 			});
 
 			// tracker scroll event
 			socket.on('scroll', function(coords){
 				console.log('indian scroll event');
-				window.sim.scrollTo(coords[0],coords[1]);
+				window.simulator.scrollTo(coords[0],coords[1]);
 			});
 
 
@@ -64,7 +55,16 @@
 				Davy.face.showDetailsPane();
 				socket.emit('tail', id );
 
-				window.sim = window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth+',location=no,menubar=no,status=no,titlebar=no,toolbar=no,resizable=no,directories=no');
+				window.simulator = window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth+',location=no,menubar=no,status=no,titlebar=no,toolbar=no,resizable=no,directories=no');
+
+				if (window.simulator.jQuery.twinkle == undefined){
+					var head = window.simulator.document.getElementsByTagName("head")[0];         
+					var script = window.simulator.document.createElement('script');
+					script.type = 'text/javascript';
+					cssNode.src = 'crocket/javascript/jquery.twinkle.js';
+					head.appendChild(script);
+				}
+
 			});
 
 
@@ -131,23 +131,3 @@
 		},
 	}; // end Davy
 	Davy.init();
-	 
-	</script>
-</head>
-<body>
-	<div id="main">
-	<div id="main-inner">
-		<div id="list">
-			<div id="list-inner">
-				<h1>Davy Crockett</h1>
-			</div>
-		</div>
-		<div id="details">
-			<div id="details-inner">
-			<!-- <iframe id="preview" src="/client.html"/> -->
-			</div>
-		</div>
-	</div>
-	</div>
-</body>
-</html>

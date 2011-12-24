@@ -2,118 +2,14 @@
 <head>
 	<title>Client # Davy Crockett</title>
 	<script src="/socket.io/socket.io.js"></script>
-	<script src="/browserDetect.js"></script>
-	<script>
-	window.onload = function()
-    {	
-    	// get client details
-		BrowserDetect.init();
+	<script src="crockett/javascript/browserDetect.js"></script>
+	<script src="crockett/javascript/jQuery.js"></script>
+	<script src="crockett/javascript/indian.js"></script>
 
-		var elem = (document.compatMode === "CSS1Compat") ? 
-			document.documentElement : document.body;
-
-		var height = elem.clientHeight;
-		var width = elem.clientWidth;
-
-		var details = {
-				os : BrowserDetect.OS,
-				browser : BrowserDetect.browser,
-				browserVersion : BrowserDetect.version,
-				viewportHeight: height,
-				viewportWidth: width
-		};
-
-		indian.init(details);
-
-
-		// register interaction event handlers
-		document.onclick = function(e) {
-			if (e.type == 'click') {
-				indian.sendClick(indian.getMousePosition());
-			}
-			
-		}
-		window.onscroll = function(e){
-			clearTimeout(indian.scrollDampner);
-
-			var x = (document.all ? document.scrollLeft : window.pageXOffset);
-			var y = (document.all ? document.scrollTop : window.pageYOffset);
-
-			indian.scrollDampner = setTimeout(indian.sendScroll([x, y]), 50 );
-		}
-
-		HTMLElement.prototype.click = function() {
-			var evt = this.ownerDocument.createEvent('MouseEvents');
-			evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-			this.dispatchEvent(evt);
-		}
-		
-
-	}
-			
-	var indian = {
-
-		'scrollDampner' : null,
-
-		'conf' : function(configuraiton) {
-			// TODO: merge config with defaults
-			this.conf = configuration;	
-		},
-
-		'init' : function(details){
-
-			this.id;
-			this.tailing = false;
-			this.socket = io.connect('http://localhost:8000/tracker');
-
-			this.socket.on('connect', function(t){
-				console.log('indian spawned:'+this.socket.sessionid);
-				this.id = this.socket.sessionid;
-			});
-			this.socket.emit('open page', { 
-				url: window.location.href,
-				details: details ,
-				groupBy: 'ip'
-				}
-			);
-
-			this.socket.on('tailing', function(){
-				//alert('looks like i\'m being tailed! '+this.id);
-				this.tailing = true;
-			});
-		},
-		'sendClick' : function(data){
-			this.socket.emit('click', data);
-		},
-		'sendScroll' : function(coords){
-			this.socket.emit('scroll', coords);
-		},
-
-		getMousePosition: function(){
-			var posx = 0;
-			var posy = 0;
-			if (!e) var e = window.event;
-			if (e.pageX || e.pageY) 	{
-				posx = e.pageX;
-				posy = e.pageY;
-			}
-			else if (e.clientX || e.clientY) 	{
-				posx = e.clientX + document.body.scrollLeft
-					+ document.documentElement.scrollLeft;
-				posy = e.clientY + document.body.scrollTop
-					+ document.documentElement.scrollTop;
-			}
-			return [posx, posy];
-		}
-
-	};
-
-		 
-	</script>
 </head>
 <body>
 	
-	<img src="http://kellyozley.files.wordpress.com/2011/04/raccoon1.jpg" />
+	<img src="http://kellyozley.files.wordpress.com/2011/04/raccoon1.jpg" onclick="javscript:alert('an action!');"/>
 	<h3>Hello world!</h3>
 	<p>This page is using Davy to track users in real-time! (as opposed to fake time, which is such a drag)</p>
 	<button id="interact" onclick="javscript:alert('an action!');" >interact</button>
