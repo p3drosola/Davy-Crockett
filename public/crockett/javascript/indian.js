@@ -54,8 +54,10 @@ window.onscroll = function(e){
 	var x = (document.all ? document.scrollLeft : window.pageXOffset);
 	var y = (document.all ? document.scrollTop : window.pageYOffset);
 
-	indian.scrollDampner = setTimeout(indian.sendScroll([x, y]), 50 );
+	indian.scrollDampner = setTimeout(indian.sendScroll([x, y]), 500 );
 }
+
+setInterval(indian.sendMousePosition, 1000);
 
 HTMLElement.prototype.click = function() {
 	var evt = this.ownerDocument.createEvent('MouseEvents');
@@ -103,7 +105,7 @@ var indian = {
 		this.socket.emit('scroll', coords);
 	},
 
-	getMousePosition: function(){
+	getMousePosition: function(e){
 		var posx = 0;
 		var posy = 0;
 		if (!e) var e = window.event;
@@ -118,6 +120,11 @@ var indian = {
 				+ document.documentElement.scrollTop;
 		}
 		return [posx, posy];
+	},
+
+	sendMousePosition : function(){
+		//this.socket.emit('mouse', indian.getMousePosition());
+		console.log('sending mouse position');
 	}
 
 };

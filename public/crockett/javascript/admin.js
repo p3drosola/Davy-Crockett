@@ -49,24 +49,38 @@ var Davy = {
 
 
 		// when the track button is clicked
-		$('#list .trackbtn').live('click', function(){
+		$('#indian-list .btn').live('click', function(){
 
+			var id = $(this).parents('tr').attr('data-id');
 			console.log('tailing #'+id);
-			var id = $(this).attr('data-id');
 			var indian = Davy.db[id];
-			Davy.face.showDetailsPane();
 			socket.emit('tail', id );
 
-			window.simulator = window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth+',location=no,menubar=no,status=no,titlebar=no,toolbar=no,resizable=no,directories=no');
+			//window.simulator = window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth+',location=no,menubar=no,status=no,titlebar=no,toolbar=no,resizable=no,directories=no');
 
+			var url;
+			if( indian.url.search('\\?') != -1 ){
+				url = indian.url+'&notrack=1';
+			} else {
+				url = indian.url+'?notrack=1';
+			}
+
+			$('#simulator').attr('src', url);
+			$('#simulator').css({
+				width: indian.details.viewportWidth,
+				height: indian.details.viewportHeight
+			});
+
+			window.simulator.document.body.appendChild($('<div id="mousetracker" style="width:20px;height:20px;background:red;position:absolute;z-index:2000;"></div>'));
+
+			/*
 			if (window.simulator.jQuery.twinkle == undefined){
 				var head = window.simulator.document.getElementsByTagName("head")[0];         
 				var script = window.simulator.document.createElement('script');
 				script.type = 'text/javascript';
 				cssNode.src = 'crocket/javascript/jquery.twinkle.js';
 				head.appendChild(script);
-			}
-
+			}*/
 		});
 	}
 };
@@ -105,7 +119,7 @@ Davy.face = {
 	newClient : function(id, data) {
 
 		var n = '<tr data-id="'+id+'">';
-		n += '<td class="id">'+id+'</td>';
+		n += '<td class="id"><button class="btn">'+id+'</button></td>';
 		n += '<td>'+data.url+'</td>';
 		n += '<td>'+data.details.os+'</td>';
 		n += '<td>'+data.details.browser+'</td>';
@@ -114,7 +128,7 @@ Davy.face = {
 	},
 	removeClient : function(id){
 		var row = $('#indian-list tr[data-id='+id+']');
-		$('button', row).removeClass('primary');
+		$('button', row).addClass('disabled');
 		$(row).addClass('dead');
 	},
 	checkEmpty:function(){

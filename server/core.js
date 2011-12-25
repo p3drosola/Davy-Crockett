@@ -93,7 +93,7 @@ module.exports = {
 					clog.debug("trackingDB", trackDB);
 				}
 			});
-			// events:
+			
 			socket.on('scroll', function(data){
 				clog.warn('EVT[scroll] #'+socket.id, data);
 				
@@ -101,6 +101,18 @@ module.exports = {
 
 				if (trackDB[socket.id] != undefined) {
 					adminIO.emit("scroll", data);
+				} else {
+					clog.error("no tracker is listening to indian #"+socket.id);
+					clog.debug("trackingDB", trackDB);
+				}
+			});
+			socket.on('mouse', function(data){
+				clog.warn('EVT[mouse] #'+socket.id, data);
+				
+				var trackDB = module.exports.trackDB;
+
+				if (trackDB[socket.id] != undefined) {
+					adminIO.emit("mouse", data);
 				} else {
 					clog.error("no tracker is listening to indian #"+socket.id);
 					clog.debug("trackingDB", trackDB);

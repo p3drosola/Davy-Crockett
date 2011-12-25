@@ -25,3 +25,9 @@ body {
 #indian-list tr.dead td:first-child{
 	border-left: 3px solid #d50404;
 }
+
+
+#simulator {
+	border: 1px solid #dbdbdb;
+	margin: auto;
+}
