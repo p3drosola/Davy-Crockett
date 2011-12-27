@@ -24,10 +24,9 @@ jQuery(function($){
 // get client details
 BrowserDetect.init();
 
-var elem = (document.compatMode === "CSS1Compat") ? 
-	document.documentElement : document.body;
-var height = elem.clientHeight;
-var width = elem.clientWidth;
+var height = $(window).height();
+var width = $(window).width();
+
 var details = {
 		os : BrowserDetect.OS,
 		browser : BrowserDetect.browser,
@@ -57,12 +56,12 @@ var indian = {
 
 	// Scroll variables
 	'scrollInterval':null,
-	'scrollPosition':[],
+	'scrollPosition':[0,0],
 	'scrollPositionLastSent':[],
 
 	// Mouse mouse variables
 	'mousemoveInterval' : null,
-	'mousePosition' : [],
+	'mousePosition' : [0,0],
 	'mousePositionLastSent' : [],
 
 	'conf' : function(configuraiton) {
@@ -101,7 +100,11 @@ var indian = {
 		// register interaction event handlers
 		document.onclick = function(e) {
 			if (e.type == 'click') {
-				indian.sendClick(indian.getMousePosition());
+				var data = [
+					indian.mousePosition[0] - indian.scrollPosition[0],
+					indian.mousePosition[1] - indian.scrollPosition[1]
+				];
+				indian.sendClick(data);
 			}
 			
 		}
@@ -157,7 +160,13 @@ var indian = {
 		if (indian.mousePosition != indian.mousePositionLastSent){
 			//console.log('sending mouse position', indian.mousePosition);
 			indian.mousePositionLastSent = indian.mousePosition;
-			indian.socket.emit('mouse', indian.mousePosition);
+
+			var data = [
+				indian.mousePosition[0] - indian.scrollPosition[0],
+				indian.mousePosition[1] - indian.scrollPosition[1]
+			]; 
+			console.log(data);
+			indian.socket.emit('mouse', data);
 		} 
 	}
 

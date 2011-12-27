@@ -7,6 +7,7 @@
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="javascript/jquery.js" type="text/javascript"></script>
+	<script src="javascript/jquery.twinkle.js" type="text/javascript"></script>
 	<script src="javascript/admin.js"></script>
 </head>
 <body>
@@ -55,7 +56,7 @@
       </table>
       <div class="empty alert-message warning hidden">
         <a class="close" href="#">×</a>
-        <p><strong>It's pretty quiet in here</strong> Doesn't seem that anyone is connected at the moment.</p>
+        <p><strong>It's pretty quiet in here.</strong> It doesn't seem that anyone is connected at the moment.</p>
       </div>
 	
 	</div> <!-- end #indians -->
@@ -63,15 +64,17 @@
 
 	<div class="tracker main-content">
 		<h2>Tracker</h2>
-			<div id="simulator-cover"></div>
+			<div id="simulator-cover">
+				<div id="mouse-tracker"></div>
+			</div>
 			<iframe id="simulator" src="#"></iframe>
 	</div>
 
 
 
 	<div class="help main-content">
-		<h2>Help</h2>
-		<p>To quickly add dropdown functionality to any nav element, use the data-dropdown attribute. Any valid bootstrap dropdown will automatically be activated.</p>
+		<h2>Help
+		<small>(me write this page)</small></h2>
 	</div>
 
 	</div> <!-- end #main -->

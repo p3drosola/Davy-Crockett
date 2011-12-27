@@ -36,8 +36,18 @@ var Davy = {
 		// tracker: click event
 		socket.on('click', function(coords){
 			console.log('indian click event');
-			console.log(window.simulator.document);
-			console.log( window.simulator.document.elementFromPoint(coords[0], coords[1]) );
+			//console.log(window.simulator.document);
+			//console.log( window.simulator.document.elementFromPoint(coords[0], coords[1]) );
+			$('#mouse-tracker').css({
+				left:coords[0],
+				top:coords[1]
+
+			}).twinkle({
+				widthRatio:0,
+				heightRatio:0,
+				effect:'splash'
+			});
+
 			window.simulator.document.elementFromPoint(coords[0], coords[1]).click();
 		});
 
@@ -45,6 +55,15 @@ var Davy = {
 		socket.on('scroll', function(coords){
 			console.log('indian scroll event');
 			window.simulator.scrollTo(coords[0],coords[1]);
+		});
+
+		// tracker mouse move event
+		socket.on('mouse', function(coords){
+			console.log('indian mouse move');
+			$('#mouse-tracker').css({
+				left: coords[0],
+				top:coords[1]
+			});
 		});
 
 

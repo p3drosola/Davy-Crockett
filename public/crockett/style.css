@@ -53,3 +53,11 @@ body {
 /*	background-color: rgba(0, 115, 245, 0.31);*/
 	overflow: hidden;
 }
+#mouse-tracker {
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url(img/cursor.png) no-repeat top left;
+}
