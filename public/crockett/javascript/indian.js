@@ -8,7 +8,7 @@
 
 /* Adds jQuery if it's not alvailable on the page */
 if (jQuery == undefined) {
-	console.log('adding jQuery');
+	//console.log('adding jQuery');
 	var head = document.getElementsByTagName("head")[0];         
 	var script = document.createElement('script');
 	script.type = 'text/javascript';
@@ -26,10 +26,8 @@ BrowserDetect.init();
 
 var elem = (document.compatMode === "CSS1Compat") ? 
 	document.documentElement : document.body;
-
 var height = elem.clientHeight;
 var width = elem.clientWidth;
-
 var details = {
 		os : BrowserDetect.OS,
 		browser : BrowserDetect.browser,
@@ -40,25 +38,7 @@ var details = {
 
 indian.init(details);
 
-
-// register interaction event handlers
-document.onclick = function(e) {
-	if (e.type == 'click') {
-		indian.sendClick(indian.getMousePosition());
-	}
-	
-}
-window.onscroll = function(e){
-	clearTimeout(indian.scrollDampner);
-
-	var x = (document.all ? document.scrollLeft : window.pageXOffset);
-	var y = (document.all ? document.scrollTop : window.pageYOffset);
-
-	indian.scrollDampner = setTimeout(indian.sendScroll([x, y]), 500 );
-}
-
-setInterval(indian.sendMousePosition, 1000);
-
+// ability to simulate click
 HTMLElement.prototype.click = function() {
 	var evt = this.ownerDocument.createEvent('MouseEvents');
 	evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
@@ -69,40 +49,90 @@ HTMLElement.prototype.click = function() {
 			
 var indian = {
 
-	'scrollDampner' : null,
+	// Indian Variables
+
+	tailing : false,
+	socket : null,
+	id : null,
+
+	// Scroll variables
+	'scrollInterval':null,
+	'scrollPosition':[],
+	'scrollPositionLastSent':[],
+
+	// Mouse mouse variables
+	'mousemoveInterval' : null,
+	'mousePosition' : [],
+	'mousePositionLastSent' : [],
 
 	'conf' : function(configuraiton) {
-		// TODO: merge config with defaults
+		// TODO: configuration
 		this.conf = configuration;	
 	},
 
 	'init' : function(details){
 
-		this.id;
 		this.tailing = false;
-		this.socket = io.connect('http://localhost:8000/tracker');
 
-		this.socket.on('connect', function(t){
-			console.log('indian spawned:'+this.socket.sessionid);
-			this.id = this.socket.sessionid;
-		});
-		this.socket.emit('open page', { 
-			url: window.location.href,
-			details: details ,
-			groupBy: 'ip'
+		// don't connect if the url contains notrack=1
+		if ( window.location.href.search('notrack=1') == -1 ) {
+
+			this.socket = io.connect('http://localhost:8000/tracker');
+
+			this.socket.on('connect', function(t){
+				//console.log('indian spawned:'+this.socket.sessionid);
+				this.id = this.socket.sessionid;
+			});
+			this.socket.emit('open page', { 
+				url: window.location.href,
+				details: details ,
+				groupBy: 'ip'
+				}
+			);
+
+			this.socket.on('tailing', function(){
+				indian.tailing = true;
+				indian.bindEvents();
+			});
+		}
+	},
+
+	'bindEvents' : function(){
+		// register interaction event handlers
+		document.onclick = function(e) {
+			if (e.type == 'click') {
+				indian.sendClick(indian.getMousePosition());
 			}
-		);
+			
+		}
+		window.onscroll = function(e){
+			
+			var x = (document.all ? document.scrollLeft : window.pageXOffset);
+			var y = (document.all ? document.scrollTop : window.pageYOffset);	
+			
+			indian.scrollPosition = [x,y];
 
-		this.socket.on('tailing', function(){
-			//alert('looks like i\'m being tailed! '+this.id);
-			this.tailing = true;
-		});
+			//$.throttle( 50, indian.sendScroll )
+
+		}
+		indian.scrollInterval = setInterval(indian.sendScroll, 50 );
+
+		window.onmousemove = function(e){
+			indian.mousePosition =indian.getMousePosition(e);
+		}
+		indian.mousemoveInterval = setInterval(indian.sendMousePosition, 50);
+
 	},
+
 	'sendClick' : function(data){
-		this.socket.emit('click', data);
+		indian.socket.emit('click', data);
 	},
-	'sendScroll' : function(coords){
-		this.socket.emit('scroll', coords);
+	'sendScroll' : function(){
+		if (indian.scrollPosition != indian.scrollPositionLastSent) {
+			indian.socket.emit('scroll', indian.scrollPosition);
+			//console.log('sending scroll');
+			indian.scrollPositionLastSent = indian.scrollPosition;
+		}
 	},
 
 	getMousePosition: function(e){
@@ -123,8 +153,12 @@ var indian = {
 	},
 
 	sendMousePosition : function(){
-		//this.socket.emit('mouse', indian.getMousePosition());
-		console.log('sending mouse position');
+
+		if (indian.mousePosition != indian.mousePositionLastSent){
+			//console.log('sending mouse position', indian.mousePosition);
+			indian.mousePositionLastSent = indian.mousePosition;
+			indian.socket.emit('mouse', indian.mousePosition);
+		} 
 	}
 
 };

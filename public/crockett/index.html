@@ -16,9 +16,9 @@
 			<div class="container">
 				<a class="brand" href="#">Davy Crockett</a>
 				<ul class="nav">
-					<li><a href="#indians">Indians</a></li>
-					<li><a href="#tracker">Tracker</a></li>
-					<li><a href="#help">Help</a></li>
+					<li><a href="#indians" class='indians'>Indians</a></li>
+					<li><a href="#tracker" class='tracker'>Tracker</a></li>
+					<li><a href="#help" class='help'>Help</a></li>
 				</ul>
 			</div>
 		</div>
@@ -53,7 +53,7 @@
         <tbody>
         </tbody>
       </table>
-      <div class="empty alert-message warning">
+      <div class="empty alert-message warning hidden">
         <a class="close" href="#">×</a>
         <p><strong>It's pretty quiet in here</strong> Doesn't seem that anyone is connected at the moment.</p>
       </div>
@@ -63,6 +63,7 @@
 
 	<div class="tracker main-content">
 		<h2>Tracker</h2>
+			<div id="simulator-cover"></div>
 			<iframe id="simulator" src="#"></iframe>
 	</div>
 

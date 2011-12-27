@@ -10,7 +10,7 @@ var Davy = {
 		
 		// load inicial indians database
 		socket.on('db', function (data) {
-			console.log(data);
+			//console.log(data);
 			Davy.db = data;
 			$.each(data, function(id, indian){
 				Davy.db[id] = indian;
@@ -68,10 +68,23 @@ var Davy = {
 			$('#simulator').attr('src', url);
 			$('#simulator').css({
 				width: indian.details.viewportWidth,
-				height: indian.details.viewportHeight
+				height: indian.details.viewportHeight,
+				display:'none'
+			}).fadeIn('slow', function(){
+				var pos = $('#simulator').position();
+				console.log(pos);
+				$('#simulator-cover').css({
+				width: indian.details.viewportWidth,
+				height: indian.details.viewportHeight,
+				left: pos.left,
+				top: pos.top
+			});
 			});
 
-			window.simulator.document.body.appendChild($('<div id="mousetracker" style="width:20px;height:20px;background:red;position:absolute;z-index:2000;"></div>'));
+
+			$('.nav .tracker').click();
+
+			//window.simulator.document.body.appendChild($('<div id="mousetracker" style="width:20px;height:20px;background:red;position:absolute;z-index:2000;"></div>'));
 
 			/*
 			if (window.simulator.jQuery.twinkle == undefined){
@@ -106,10 +119,8 @@ Davy.face = {
 
 		// move to correct content if the hash is already set
 		var hash = window.location.hash;
-		var item = $('a[href='+hash+']', '.nav');
-		if (item.length == 1){
-			$(item).click();
-		}
+		hash = hash.substr(1);
+		Davy.face.navTo(hash);
 
 		// welcome banner action
 		$("#welcome .show-indians").click(function(){
@@ -118,13 +129,14 @@ Davy.face = {
 	},
 	newClient : function(id, data) {
 
-		var n = '<tr data-id="'+id+'">';
-		n += '<td class="id"><button class="btn">'+id+'</button></td>';
+		var n = '<tr data-id="'+id+'" style="display:none">';
+		n += '<td class="id"><button class="btn">track #'+id+'</button></td>';
 		n += '<td>'+data.url+'</td>';
 		n += '<td>'+data.details.os+'</td>';
 		n += '<td>'+data.details.browser+'</td>';
 		n += '</tr>';
 		$('#indian-list tbody').append(n);
+		$('#indian-list tr[data-id='+id+']').fadeIn();
 	},
 	removeClient : function(id){
 		var row = $('#indian-list tr[data-id='+id+']');
@@ -133,9 +145,21 @@ Davy.face = {
 	},
 	checkEmpty:function(){
 		if($('#indian-list tbody tr').length == 0){
-			$(".indians .empty").show();
+			$(".main-content.indians .empty").fadeIn();
 		} else {
-			$(".indians .empty").hide();
+			$(".main-content.indians .empty").slideUp();
+		}
+	},
+	navTo : function( tab ){
+
+		if ($.trim(tab) != ''){
+			var item = $('.nav .'+tab);
+			if (item.length == 1){
+				$(item).click();
+				window.location.hash = tab;
+			} else {
+				console.log('no tab called '+tab);
+			}
 		}
 	}
 		

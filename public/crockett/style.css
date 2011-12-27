@@ -6,6 +6,16 @@ body {
 	padding-top: 20px;
 	
 }
+
+.hidden {
+	display: none;
+}
+
+#welcome {
+	background: none;
+	padding-top: 100px;
+}
+
 .main-content {
 	display: none;
 	background: white;
@@ -26,8 +36,20 @@ body {
 	border-left: 3px solid #d50404;
 }
 
+#indian-list button {
+	font-size: 10px;
+	margin: -5px 0;
+}
+
 
 #simulator {
 	border: 1px solid #dbdbdb;
+	display: block;
 	margin: auto;
+}
+#simulator-cover{
+	display: block;
+	position: absolute;
+/*	background-color: rgba(0, 115, 245, 0.31);*/
+	overflow: hidden;
 }
