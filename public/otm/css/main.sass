@@ -1,0 +1,284 @@
+$blue: #53acd6
+$lightblue: #b8e2f5
+$darkblue: #1274a2
+$greytext: #5f5f5f
+
+
+
+body
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif
+	font-weight: 300
+	background: url(../img/pattern.png)
+
+::selection
+	background: $lightblue
+
+::-moz-selection
+	background: $lightblue
+
+
+.navigation
+	
+	position: fixed
+	top: 0px
+	width: 100%
+
+	.container
+		position: relative
+
+	ul
+		position: absolute
+		top: 0px
+		right: 0px
+		z-index: 10
+		background: #49a5d0
+		padding: 0
+		margin: 0
+		border: 1px solid rgba(255,255,255, .2)
+		border-top: 0px
+		padding: 0 20px
+		border-bottom-left-radius: 5px
+		border-bottom-right-radius: 5px
+	li
+		display: inline-block
+		list-style-type: none
+
+		&.active
+			border-top: 2px solid #c1e9fb
+
+			a
+				padding-top: 18px
+
+		a
+			display: inline-block
+			color: white
+			font-size: 14px
+			padding: 20px 10px 20px 10px
+
+			&:active
+				background: $darkblue
+			&:hover
+				text-decoration: none
+		
+
+.intro
+	background-color: $blue
+	background: -moz-linear-gradient(top,  #53acd6 76%, #3d9cc8 100%)
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(76%,#53acd6), color-stop(100%,#3d9cc8))
+	background: -webkit-linear-gradient(top,  #53acd6 76%,#3d9cc8 100%) 
+	background: -o-linear-gradient(top,  #53acd6 76%,#3d9cc8 100%)
+	background: -ms-linear-gradient(top,  #53acd6 76%,#3d9cc8 100%) 
+	background: linear-gradient(top,  #53acd6 76%,#3d9cc8 100%)
+
+	color: white
+
+
+	.header
+		margin-top: 73px
+
+		.logo
+			margin-top: 6px
+
+		.mission
+			color: $lightblue
+			font-size: 24px
+			line-height: 30px
+
+			em
+				color: white
+				font-weight: 300
+				text-decoration: none
+				font-style: normal
+
+	.hook
+		padding-top: 50px
+		position: relative
+
+		.big 
+			font-size: 41px
+			font-weight: bold
+			line-height: 50px
+			margin-right: 215px
+			margin-bottom: 48px
+			text-shadow: 1px 1px 2px rgba(0,0,0, .2)
+		.small
+			max-width: 360px
+			font-size: 30px
+			line-height: 36px
+
+			img
+				margin: 33px 0
+
+		.phone
+			width: 147px
+			height: 468px
+			background: url(../img/phone.png) no-repeat
+			position: absolute
+			right: 0px
+			bottom: -30px
+
+		.asterisk
+			position: absolute
+			right: 166px
+			bottom: 5px
+			font-size: 16px
+
+
+.main-content
+	
+	padding: 0 0
+
+	.page
+		padding: 50px 0
+
+	p,h1,h2,h3,h4,h5,h6
+		text-shadow: 1px 1px 0 white
+
+	p, li
+		font-size: 18px
+		line-height: 24px
+
+	.amb
+		text-align: right
+		img 
+			margin-top: 50px
+
+	.thirds
+		margin-top: 80px
+
+		.number
+			display: block
+			color: #53acd6
+			margin-bottom: 30px
+			font-size: 72px
+			font-family: "HelveticaNeue-UltraLight", "Helvetica Neue UltraLight", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif
+
+		h3
+			color: black
+			font-size: 24px
+			line-height: 40px
+
+	.sectionhead
+		margin-top: 50px
+		margin-bottom: 50px
+
+		h2
+			font-size: 60px
+			color: black
+			line-height: 1
+			color: $darkblue
+		p
+			font-size: 18px
+			font-weight: bold
+			color: black
+
+	.contact
+		label
+			font-size: 18px
+			color: $greytext
+		input[type=text],
+		textarea
+			font-size: 18px
+			padding: 10px
+		textarea
+			height: 150px
+		.contact-ok
+			margin-top: 30px
+
+.footer
+	padding: 30px 0
+	text-align: center
+	color: #848484
+
+
+// only Desktop styles
+@media ( min-width: 768px )
+	.nodesk
+		display: none
+
+// mobile styles
+@media( max-width: 767px )
+	.nomob,
+	.main-content .thirds .number
+		display: none
+
+	.hook .big 
+		margin-right: 0px !important
+	
+	.intro .header
+		margin-top: 20px
+
+	.main-content
+		.sectionhead
+			h2
+				font-size: 40px
+
+		.page
+			padding: 0 0
+
+		.amb
+			text-align: center
+
+	.navigation
+		position: fixed
+		z-index: 10
+		top: 0px
+		display: none
+		
+
+		background: #5f5f5f
+		background: -moz-linear-gradient(top,  #5f5f5f 0%, #000000 100%)
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5f5f5f), color-stop(100%,#000000))
+		background: -webkit-linear-gradient(top,  #5f5f5f 0%,#000000 100%)
+		background: -o-linear-gradient(top,  #5f5f5f 0%,#000000 100%)
+		background: -ms-linear-gradient(top,  #5f5f5f 0%,#000000 100%)
+		background: linear-gradient(top,  #5f5f5f 0%,#000000 100%)
+
+		.container 
+			border-bottom: 3px solid $darkblue
+			box-shadow: 0 2px 5px rgba(0,0,0, 0.3)
+
+
+		ul
+			position: static
+			background: transparent
+			border: 0px
+			padding: 0
+		li 
+			display: block
+			border-top: 1px solid #3e3e3e
+			margin: 0 -20px
+
+			&.active
+				border-top: 1px solid #3e3e3e
+
+				a
+					padding-top: 14px 20px
+			a
+				display: block
+				padding: 14px 20px
+				font-size: 18px
+
+		
+				&:active
+					background: rgba(255,255,255, 0.1)
+
+	#toggle-nav
+		position: fixed
+		z-index: 11
+		top: 0px
+		right: 0px
+		padding: 10px
+		margin: 20px 20px 0 0
+		background: $blue
+		border-radius: 6px
+
+		&.clicked
+			// background: black
+
+// Desktop size 2
+@media ( min-width: 979px )
+	.mission
+		padding-right: 40px
+
+

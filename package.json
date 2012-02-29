@@ -9,7 +9,9 @@
     	"socket.io" : "0.8.x" ,
     	"clog" : "0.1.x"
   	},
-	"scripts": {
-		"start": "node ./server.js"
+
+	"main"      :"app.js",
+	"scripts"   :{
+		"start":"node app.js"
 	}
 }

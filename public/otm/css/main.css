@@ -1,0 +1,221 @@
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+  background: url(../img/pattern.png); }
+
+::selection {
+  background: #b8e2f5; }
+
+::-moz-selection {
+  background: #b8e2f5; }
+
+.navigation {
+  position: fixed;
+  top: 0px;
+  width: 100%; }
+  .navigation .container {
+    position: relative; }
+  .navigation ul {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 10;
+    background: #49a5d0;
+    padding: 0;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 0px;
+    padding: 0 20px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px; }
+  .navigation li {
+    display: inline-block;
+    list-style-type: none; }
+    .navigation li.active {
+      border-top: 2px solid #c1e9fb; }
+      .navigation li.active a {
+        padding-top: 18px; }
+    .navigation li a {
+      display: inline-block;
+      color: white;
+      font-size: 14px;
+      padding: 20px 10px 20px 10px; }
+      .navigation li a:active {
+        background: #1274a2; }
+      .navigation li a:hover {
+        text-decoration: none; }
+
+.intro {
+  background-color: #53acd6;
+  background: -moz-linear-gradient(top, #53acd6 76%, #3d9cc8 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(76%, #53acd6), color-stop(100%, #3d9cc8));
+  background: -webkit-linear-gradient(top, #53acd6 76%, #3d9cc8 100%);
+  background: -o-linear-gradient(top, #53acd6 76%, #3d9cc8 100%);
+  background: -ms-linear-gradient(top, #53acd6 76%, #3d9cc8 100%);
+  background: linear-gradient(top, #53acd6 76%, #3d9cc8 100%);
+  color: white; }
+  .intro .header {
+    margin-top: 73px; }
+    .intro .header .logo {
+      margin-top: 6px; }
+    .intro .header .mission {
+      color: #b8e2f5;
+      font-size: 24px;
+      line-height: 30px; }
+      .intro .header .mission em {
+        color: white;
+        font-weight: 300;
+        text-decoration: none;
+        font-style: normal; }
+  .intro .hook {
+    padding-top: 50px;
+    position: relative; }
+    .intro .hook .big {
+      font-size: 41px;
+      font-weight: bold;
+      line-height: 50px;
+      margin-right: 215px;
+      margin-bottom: 48px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); }
+    .intro .hook .small {
+      max-width: 360px;
+      font-size: 30px;
+      line-height: 36px; }
+      .intro .hook .small img {
+        margin: 33px 0; }
+    .intro .hook .phone {
+      width: 147px;
+      height: 468px;
+      background: url(../img/phone.png) no-repeat;
+      position: absolute;
+      right: 0px;
+      bottom: -30px; }
+    .intro .hook .asterisk {
+      position: absolute;
+      right: 166px;
+      bottom: 5px;
+      font-size: 16px; }
+
+.main-content {
+  padding: 0 0; }
+  .main-content .page {
+    padding: 50px 0; }
+  .main-content p, .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
+    text-shadow: 1px 1px 0 white; }
+  .main-content p, .main-content li {
+    font-size: 18px;
+    line-height: 24px; }
+  .main-content .amb {
+    text-align: right; }
+    .main-content .amb img {
+      margin-top: 50px; }
+  .main-content .thirds {
+    margin-top: 80px; }
+    .main-content .thirds .number {
+      display: block;
+      color: #53acd6;
+      margin-bottom: 30px;
+      font-size: 72px;
+      font-family: "HelveticaNeue-UltraLight", "Helvetica Neue UltraLight", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
+    .main-content .thirds h3 {
+      color: black;
+      font-size: 24px;
+      line-height: 40px; }
+  .main-content .sectionhead {
+    margin-top: 50px;
+    margin-bottom: 50px; }
+    .main-content .sectionhead h2 {
+      font-size: 60px;
+      color: black;
+      line-height: 1;
+      color: #1274a2; }
+    .main-content .sectionhead p {
+      font-size: 18px;
+      font-weight: bold;
+      color: black; }
+  .main-content .contact label {
+    font-size: 18px;
+    color: #5f5f5f; }
+  .main-content .contact input[type=text],
+  .main-content .contact textarea {
+    font-size: 18px;
+    padding: 10px; }
+  .main-content .contact textarea {
+    height: 150px; }
+  .main-content .contact .contact-ok {
+    margin-top: 30px; }
+
+.footer {
+  padding: 30px 0;
+  text-align: center;
+  color: #848484; }
+
+@media ( min-width: 768px ) {
+  .nodesk {
+    display: none; } }
+@media( max-width: 767px ) {
+  .nomob,
+  .main-content .thirds .number {
+    display: none; }
+
+  .hook .big {
+    margin-right: 0px !important; }
+
+  .intro .header {
+    margin-top: 20px; }
+
+  .main-content .sectionhead h2 {
+    font-size: 40px; }
+  .main-content .page {
+    padding: 0 0; }
+  .main-content .amb {
+    text-align: center; }
+
+  .navigation {
+    position: fixed;
+    z-index: 10;
+    top: 0px;
+    display: none;
+    background: #5f5f5f;
+    background: -moz-linear-gradient(top, #5f5f5f 0%, black 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5f5f5f), color-stop(100%, black));
+    background: -webkit-linear-gradient(top, #5f5f5f 0%, black 100%);
+    background: -o-linear-gradient(top, #5f5f5f 0%, black 100%);
+    background: -ms-linear-gradient(top, #5f5f5f 0%, black 100%);
+    background: linear-gradient(top, #5f5f5f 0%, black 100%); }
+    .navigation .container {
+      border-bottom: 3px solid #1274a2;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); }
+    .navigation ul {
+      position: static;
+      background: transparent;
+      border: 0px;
+      padding: 0; }
+    .navigation li {
+      display: block;
+      border-top: 1px solid #3e3e3e;
+      margin: 0 -20px; }
+      .navigation li.active {
+        border-top: 1px solid #3e3e3e; }
+        .navigation li.active a {
+          padding-top: 14px 20px; }
+      .navigation li a {
+        display: block;
+        padding: 14px 20px;
+        font-size: 18px; }
+        .navigation li a:active {
+          background: rgba(255, 255, 255, 0.1); }
+
+  #toggle-nav {
+    position: fixed;
+    z-index: 11;
+    top: 0px;
+    right: 0px;
+    padding: 10px;
+    margin: 20px 20px 0 0;
+    background: #53acd6;
+    border-radius: 6px; } }
+
+@media ( min-width: 979px ) {
+  .mission {
+    padding-right: 40px; } }
