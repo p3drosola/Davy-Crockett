@@ -2,6 +2,7 @@ var Davy = {
 		
 	db :   {},  // indians database
 	face: null, // interface
+	simulatorPos: {},
 
 	init:function(){
 
@@ -57,12 +58,14 @@ var Davy = {
 			window.simulator.scrollTo(coords[0],coords[1]);
 		});
 
+
 		// tracker mouse move event
 		socket.on('mouse', function(coords){
-			console.log('indian mouse move');
+			
+			//console.log('indian mouse move', coords);
 			$('#mouse-tracker').css({
 				left: coords[0],
-				top:coords[1]
+				top: coords[1]
 			});
 		});
 
@@ -90,8 +93,8 @@ var Davy = {
 				height: indian.details.viewportHeight,
 				display:'none'
 			}).fadeIn('slow', function(){
-				var pos = $('#simulator').position();
-				console.log(pos);
+				var pos = $('#simulator').offset();
+				//console.log(Davy.simulatorPos);
 				$('#simulator-cover').css({
 				width: indian.details.viewportWidth,
 				height: indian.details.viewportHeight,
