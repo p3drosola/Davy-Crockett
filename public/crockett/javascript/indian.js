@@ -1,4 +1,3 @@
-
 /*!
  * Davy Crockett
  * Copyright(c) 2010 Pedro Solá <p3dro.sola@gmail.com>
@@ -19,8 +18,6 @@
     $(function(){
         Davy.indian = new Davy.Indian();
     });
-
-
 
 
 
@@ -100,6 +97,14 @@
         if (!window.location.href.match('notrack=1')) this.init();
 
     };
+
+
+    // cross-browser click trigger
+    HTMLElement.prototype.click = function() {
+        var evt = this.ownerDocument.createEvent('MouseEvents');
+        evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+        this.dispatchEvent(evt);
+    }
 
 
 })(jQuery, 'Davy'); // change Namespace here
