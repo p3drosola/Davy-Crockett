@@ -129,7 +129,7 @@ module.exports = {
 			socket.emit('db', module.exports.indianDB);
 
 			// when admin decides to tail someone
-			socket.on('tail', function(client_id) {
+			socket.on('track', function(client_id) {
 
 				console.info('Admin is now tracking indian #' + client_id);
 
@@ -137,8 +137,7 @@ module.exports = {
 				module.exports.trackDB[client_id] = socket.id;
 
 				// let the indian know he is being followed
-				trackerIO.socket(client_id).emit('tailing');
-				//io.sockets.sockets[client_id].emit('tailing');
+				trackerIO.socket(client_id).emit('track');
 
 			});
 

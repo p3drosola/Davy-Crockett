@@ -74,9 +74,9 @@ var Davy = {
 		$('#indian-list .btn').live('click', function(){
 
 			var id = $(this).parents('tr').attr('data-id');
-			console.log('tailing #'+id);
+			console.log('tracking #'+id);
 			var indian = Davy.db[id];
-			socket.emit('tail', id );
+			socket.emit('track', id );
 
 			//window.simulator = window.open(indian.url, '_blank', 'innerWidth='+indian.details.viewportWidth+',innerHeight='+indian.details.viewportWidth+',location=no,menubar=no,status=no,titlebar=no,toolbar=no,resizable=no,directories=no');
 
@@ -89,15 +89,15 @@ var Davy = {
 
 			$('#simulator').attr('src', url);
 			$('#simulator').css({
-				width: indian.details.viewportWidth,
-				height: indian.details.viewportHeight,
+				width: indian.details.width,
+				height: indian.details.height,
 				display:'none'
 			}).fadeIn('slow', function(){
 				var pos = $('#simulator').offset();
 				//console.log(Davy.simulatorPos);
 				$('#simulator-cover').css({
-				width: indian.details.viewportWidth,
-				height: indian.details.viewportHeight,
+				width: indian.details.width,
+				height: indian.details.height,
 				left: pos.left,
 				top: pos.top
 			});
@@ -154,7 +154,7 @@ Davy.face = {
 		var n = '<tr data-id="'+id+'" style="display:none">';
 		n += '<td class="id"><button class="btn">track #'+id+'</button></td>';
 		n += '<td>'+data.url+'</td>';
-		n += '<td>'+data.details.os+'</td>';
+		n += '<td>'+data.details.OS+'</td>';
 		n += '<td>'+data.details.browser+'</td>';
 		n += '</tr>';
 		$('#indian-list tbody').append(n);

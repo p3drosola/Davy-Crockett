@@ -5,6 +5,11 @@ var BrowserDetect = {
 				|| this.searchVersion(navigator.appVersion)
 				|| "an unknown version";
 			this.OS = this.searchString(this.dataOS) || "an unknown OS";
+            return {
+                browser: this.browser,
+                version: this.version,
+                OS: this.OS
+            }
 		},
 		searchString: function (data) {
 			for (var i=0;i<data.length;i++)	{

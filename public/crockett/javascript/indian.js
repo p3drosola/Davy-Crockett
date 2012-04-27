@@ -6,168 +6,103 @@
  */
 
 
-/* Adds jQuery if it's not alvailable on the page */
-if (jQuery == undefined) {
-	//console.log('adding jQuery');
-	var head = document.getElementsByTagName("head")[0];         
-	var script = document.createElement('script');
-	script.type = 'text/javascript';
-	cssNode.src = 'crocket/javascript/jquery.js';
-	head.appendChild(script);
-	jQuery.noConflict();
-}
+(function($, namespace){
+
+    if (window[namespace]) {
+        console.warn('Namespace conflict. "'+namespace+'" is already defined');
+        return;
+    }
+
+    // export global object. change the namespace at the end of the file
+    var Davy = window[namespace] = {};
+
+    $(function(){
+        Davy.indian = new Davy.Indian();
+    });
 
 
-jQuery(function($){
-	
 
-// get client details
-BrowserDetect.init();
 
-var height = $(window).height();
-var width = $(window).width();
 
-var details = {
-		os : BrowserDetect.OS,
-		browser : BrowserDetect.browser,
-		browserVersion : BrowserDetect.version,
-		viewportHeight: height,
-		viewportWidth: width
-};
 
-indian.init(details);
+    Davy.Indian = function() {
 
-// ability to simulate click
-HTMLElement.prototype.click = function() {
-	var evt = this.ownerDocument.createEvent('MouseEvents');
-	evt.initMouseEvent('click', true, true, this.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-	this.dispatchEvent(evt);
-}
-		
-}); // end jQuery document.ready
-			
-var indian = {
+        var that = this;
+        this.tracking = false;
 
-	// Indian Variables
+        this.init = function(){
 
-	tailing : false,
-	socket : null,
-	id : null,
+            // connect to server
+            this.socket = io.connect('http://localhost:8000/tracker');
 
-	// Scroll variables
-	'scrollInterval':null,
-	'scrollPosition':[0,0],
-	'scrollPositionLastSent':[],
+            // bind event handlers
+            this.socket.on('connect', function(){
+                console.log('[Davy] connected. id:'+this.socket.sessionid);
+                that.id = this.socket.sessionid;
+            });
+            this.socket.on('disconnect', function(){
+                console.log('[Davy] disconnected');
+                that.stopTracking();
+            });
 
-	// Mouse mouse variables
-	'mousemoveInterval' : null,
-	'mousePosition' : [0,0],
-	'mousePositionLastSent' : [],
+            this.socket.on('track', that.startTracking );
+            this.socket.on('stop track', that.stopTracking );
 
-	'conf' : function(configuraiton) {
-		// TODO: configuration
-		this.conf = configuration;	
-	},
 
-	'init' : function(details){
+            // emit: send details to server
+            var details = BrowserDetect.init();
+            details.width = $(window).width();
+            details.height = $(window).height();
 
-		this.tailing = false;
+            this.socket.emit('open page', {
+                url: window.location.href,
+                details:details
+            });
 
-		// don't connect if the url contains notrack=1
-		if ( window.location.href.search('notrack=1') == -1 ) {
+        };
 
-			this.socket = io.connect('http://localhost:8000/tracker');
+        // capture & send events
+        // @TODO: performance: throttling via $.throttle seems to hurt performance a bit. consider reverting to custom throttler
+        this.startTracking = function(){
+            that.tracking = true;
 
-			this.socket.on('connect', function(t){
-				//console.log('indian spawned:'+this.socket.sessionid);
-				this.id = this.socket.sessionid;
-			});
-			this.socket.emit('open page', { 
-				url: window.location.href,
-				details: details ,
-				groupBy: 'ip'
-				}
-			);
+            // click event
+            $(document).on('click', function(e){
+                that.socket.emit('click', [e.clientX, e.clientY]);
+            });
 
-			this.socket.on('tailing', function(){
-				indian.tailing = true;
-				indian.bindEvents();
-			});
-		}
-	},
+            // mousemove event
+            $(document).on('mousemove', $.throttle(50, function(e){
+                that.socket.emit('mouse', [e.clientX, e.clientY]);
+            }));
 
-	'bindEvents' : function(){
-		// register interaction event handlers
-		document.onclick = function(e) {
-			if (e.type == 'click') {
-				var data = [
-					indian.mousePosition[0] - indian.scrollPosition[0],
-					indian.mousePosition[1] - indian.scrollPosition[1]
-				];
-				indian.sendClick(data);
-			}
-			
-		}
-		window.onscroll = function(e){
-			
-			var x = (document.all ? document.scrollLeft : window.pageXOffset);
-			var y = (document.all ? document.scrollTop : window.pageYOffset);	
-			
-			indian.scrollPosition = [x,y];
+            // scroll event
+            $(window).on('scroll', $.throttle(50, function(){
+                var position = [$(document).scrollLeft(),$(document).scrollTop()];
+                that.socket.emit('scroll', position);
+            }));
 
-			//$.throttle( 50, indian.sendScroll )
+            // @TODO: handle keyboard events
 
-		}
-		indian.scrollInterval = setInterval(indian.sendScroll, 50 );
+        };
 
-		window.onmousemove = function(e){
-			indian.mousePosition =indian.getMousePosition(e);
-		}
-		indian.mousemoveInterval = setInterval(indian.sendMousePosition, 50);
+        // unbind event handlers
+        this.stopTracking = function(){
+            that.tracking = false;
+            console.log('stop tracking');
 
-	},
+            $(document).off('click');
+            $(document).off('mousemove');
+            $(window).off('scroll');
+        };
 
-	'sendClick' : function(data){
-		indian.socket.emit('click', data);
-	},
-	'sendScroll' : function(){
-		if (indian.scrollPosition != indian.scrollPositionLastSent) {
-			indian.socket.emit('scroll', indian.scrollPosition);
-			//console.log('sending scroll');
-			indian.scrollPositionLastSent = indian.scrollPosition;
-		}
-	},
+        // start the party!
+        if (!window.location.href.match('notrack=1')) this.init();
 
-	getMousePosition: function(e){
-		var posx = 0;
-		var posy = 0;
-		if (!e) var e = window.event;
-		if (e.pageX || e.pageY) 	{
-			posx = e.pageX;
-			posy = e.pageY;
-		}
-		else if (e.clientX || e.clientY) 	{
-			posx = e.clientX + document.body.scrollLeft
-				+ document.documentElement.scrollLeft;
-			posy = e.clientY + document.body.scrollTop
-				+ document.documentElement.scrollTop;
-		}
-		return [posx, posy];
-	},
+    };
 
-	sendMousePosition : function(){
 
-		if (indian.mousePosition != indian.mousePositionLastSent){
-			//console.log('sending mouse position', indian.mousePosition);
-			indian.mousePositionLastSent = indian.mousePosition;
+})(jQuery, 'Davy'); // change Namespace here
 
-			var data = [
-				indian.mousePosition[0] - indian.scrollPosition[0],
-				indian.mousePosition[1] - indian.scrollPosition[1]
-			]; 
-			console.log(data);
-			indian.socket.emit('mouse', data);
-		} 
-	}
 
-};
+
